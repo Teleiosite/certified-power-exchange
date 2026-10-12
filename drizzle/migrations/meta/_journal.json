@@ -8,6 +8,13 @@
       "when": 1791845641253,
       "tag": "0000_create_lampros_inquiry_intake",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1791845879439,
+      "tag": "0001_lock_lampros_private_uploads",
+      "breakpoints": true
     }
   ]
 }
