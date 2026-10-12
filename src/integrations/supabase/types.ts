@@ -14,13 +14,90 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      lampros_inquiries: {
+        Row: {
+          created_at: string
+          details: string
+          documents: Json
+          email: string
+          energy_load_kw: number
+          id: string
+          inquiry_type: string
+          ip_fingerprint: string
+          items: Json
+          location: string
+          monthly_power_cost: number | null
+          name: string
+          organization: string
+          outage_frequency: string | null
+          phone: string
+          sector: string | null
+        }
+        Insert: {
+          created_at?: string
+          details?: string
+          documents?: Json
+          email: string
+          energy_load_kw: number
+          id?: string
+          inquiry_type: string
+          ip_fingerprint: string
+          items?: Json
+          location: string
+          monthly_power_cost?: number | null
+          name: string
+          organization?: string
+          outage_frequency?: string | null
+          phone: string
+          sector?: string | null
+        }
+        Update: {
+          created_at?: string
+          details?: string
+          documents?: Json
+          email?: string
+          energy_load_kw?: number
+          id?: string
+          inquiry_type?: string
+          ip_fingerprint?: string
+          items?: Json
+          location?: string
+          monthly_power_cost?: number | null
+          name?: string
+          organization?: string
+          outage_frequency?: string | null
+          phone?: string
+          sector?: string | null
+        }
+        Relationships: []
+      }
+      lampros_submission_limits: {
+        Row: {
+          ip_fingerprint: string
+          request_count: number
+          window_started_at: string
+        }
+        Insert: {
+          ip_fingerprint: string
+          request_count?: number
+          window_started_at?: string
+        }
+        Update: {
+          ip_fingerprint?: string
+          request_count?: number
+          window_started_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      claim_lampros_submission_slot: {
+        Args: { p_fingerprint: string }
+        Returns: boolean
+      }
     }
     Enums: {
       [_ in never]: never
