@@ -1,0 +1,4 @@
+- [ ] Create the navy/orange Lampros design system, branded navigation, and polished overview pages.
+- [ ] Add searchable product quotes, sourcing/refurbishment trust cues, audit estimate, and loan assessment wizard.
+- [ ] Store validated submissions through Lovable Cloud; make assessment uploads private with strict limits.
+- [ ] Verify page routes, metadata, form flows, and build output.
