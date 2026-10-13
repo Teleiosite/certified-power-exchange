@@ -1,5 +1,5 @@
 import { Link, useRouterState } from "@tanstack/react-router";
-import { ArrowRight, Menu, Phone, ShieldCheck, X } from "lucide-react";
+import { ArrowRight, Menu, ShieldCheck, X } from "lucide-react";
 import { useState } from "react";
 import logo from "@/assets/lampros-logo.png";
 import { Button } from "@/components/ui/button";
@@ -19,9 +19,9 @@ export function SiteHeader() {
       <div className="border-b border-border bg-navy-deep text-soft-white">
         <div className="shell-width flex min-h-9 items-center justify-between gap-3 text-xs">
           <span className="hidden sm:block">Practical energy solutions. Sourced for your project.</span>
-          <a className="ml-auto inline-flex items-center gap-2 py-2 font-medium" href="tel:+2348000000000">
-            <Phone className="size-3.5 text-primary" /> Talk to our team <span aria-hidden="true">↗</span>
-          </a>
+          <Link className="ml-auto inline-flex items-center gap-2 py-2 font-medium" to="/quote">
+            Practical answers for your next energy project <span aria-hidden="true">↗</span>
+          </Link>
         </div>
       </div>
       <header className="sticky top-0 z-40 border-b border-border bg-background/95 backdrop-blur">
