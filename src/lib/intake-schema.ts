@@ -3,7 +3,7 @@ import { z } from "zod";
 export const supportedUploadTypes = ["application/pdf", "image/jpeg", "image/png", "image/webp"] as const;
 export const intakeFileSchema = z.object({
   name: z.string().trim().min(1).max(200),
-  storagePath: z.string().uuid(),
+  storagePath: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|jpg|png|webp)$/i),
   type: z.enum(supportedUploadTypes),
   size: z.number().int().positive().max(10 * 1024 * 1024),
   category: z.enum(["equipment specifications", "energy requirements", "project cost estimates", "financing paperwork"]).optional(),
