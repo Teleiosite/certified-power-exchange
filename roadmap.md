@@ -1,4 +1,5 @@
-- [ ] Complete branded home, trust, service, catalogue, equipment, quote, audit, assessment, and trade-in pages.
-- [ ] Finish search/filter and multi-item quoting, certified-equipment transparency, audit intake, and loan assessment wizard.
-- [ ] Validate all intake and upload paths; preserve private document storage and rate-limited submissions.
-- [ ] Add unique metadata to every public page and verify routes, key customer flows, and build output.
+- [ ] Add the missing public route leaves for home, trust, services, catalogue, equipment, quote, audit, assessment, and trade-in.
+- [ ] Complete catalogue coverage and persistent multi-item quoting; preserve certified-equipment transparency and structured audit/loan intake.
+- [ ] Correct upload-path validation and verify file signatures, size/type restrictions, private storage, and rate-limited submission.
+- [ ] Add the requested technical specification and unique metadata to every content route.
+- [ ] Verify routes, key customer flows, existing tests, and the preview build; record any unavailable email delivery configuration.
