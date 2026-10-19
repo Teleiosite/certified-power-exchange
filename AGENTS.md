@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Shared public pages belong in `src/components/site/` and route leaves in `src/routes/`; keep public intake writes in validated `src/lib/*.functions.ts` server functions so each page uses the same protected server-side submission boundary.
+- Each public page has its own `src/routes/` leaf with unique page metadata and renders the shared page from `src/components/site/`, keeping URLs crawlable and navigation type-safe.
