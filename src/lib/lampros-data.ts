@@ -6,6 +6,9 @@ export const productCategories = [
   "Electrical cables",
   "Protection & distribution",
   "Mounting & accessories",
+  "Charge controllers",
+  "Switches & controls",
+  "Conduits & fittings",
 ] as const;
 
 export const products = [
@@ -17,10 +20,14 @@ export const products = [
   { id: "battery-02", name: "Deep-cycle solar battery bank", category: "Batteries", description: "Long-life storage choices for properly specified commercial installations.", spec: "200 Ah · 12 V · Deep cycle", image: "solar" },
   { id: "cable-01", name: "Solar DC cable", category: "Electrical cables", description: "UV-resistant, insulated cable for professional solar array installations.", spec: "6 mm² · Double insulated · Per metre", image: "cable" },
   { id: "cable-02", name: "Armoured power cable", category: "Electrical cables", description: "Durable cable options selected to suit site loads and routing conditions.", spec: "4-core · 16 mm² · Size by request", image: "cable" },
+  { id: "cable-03", name: "Building wire", category: "Electrical cables", description: "Insulated copper conductors for correctly specified building circuits.", spec: "Conductor size and insulation rated to project needs", image: "cable" },
   { id: "protection-01", name: "Modular circuit protection", category: "Protection & distribution", description: "Breakers and isolation components for safe, well-ordered installations.", spec: "Single / three phase · Spec verified", image: "electrical" },
   { id: "protection-02", name: "Distribution board", category: "Protection & distribution", description: "Distribution equipment configured around actual circuits and project scope.", spec: "Metal enclosure · Multiple ways · Quoted to order", image: "electrical" },
   { id: "mounting-01", name: "Solar module mounting kit", category: "Mounting & accessories", description: "Reliable mounting rails and hardware for common commercial roof profiles.", spec: "Roof-specific · Corrosion-resistant", image: "solar" },
-  { id: "mounting-02", name: "Solar charge controller", category: "Mounting & accessories", description: "Efficient charge control sized to match system voltage and array capacity.", spec: "MPPT · 100 A · 12 / 24 / 48 V", image: "solar" },
+  { id: "controller-01", name: "MPPT solar charge controller", category: "Charge controllers", description: "Charge control matched to system voltage, array capacity and battery chemistry.", spec: "MPPT · 100 A · 12 / 24 / 48 V", image: "solar" },
+  { id: "switch-01", name: "Industrial isolator switch", category: "Switches & controls", description: "Isolation options selected for the circuit, environment and equipment duty.", spec: "Single / three phase · Rating confirmed to specification", image: "electrical" },
+  { id: "switch-02", name: "Changeover switch", category: "Switches & controls", description: "Manual source-transfer equipment for appropriately designed installations.", spec: "Current rating and pole configuration project-quoted", image: "electrical" },
+  { id: "conduit-01", name: "Electrical conduit & fittings", category: "Conduits & fittings", description: "Routing protection options matched to installation environment and layout.", spec: "Material, diameter and fittings confirmed per project", image: "electrical" },
 ] as const;
 
 export const inventory = [
