@@ -28,9 +28,9 @@ export const submitLamprosInquiry = createServerFn({ method: "POST" })
       phone: data.phone,
       location: data.location,
       energy_load_kw: data.energyLoadKw,
-      monthly_power_cost: data.monthlyPowerCost,
-      outage_frequency: data.outageFrequency,
-      sector: data.sector,
+      monthly_power_cost: data.monthlyPowerCost ?? null,
+      outage_frequency: data.outageFrequency ?? null,
+      sector: data.sector ?? null,
       details: data.details,
       items: data.items,
       documents: data.files.map((file) => ({

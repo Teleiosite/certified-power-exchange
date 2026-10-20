@@ -31,9 +31,9 @@ export const products = [
 ] as const;
 
 export const inventory = [
-  { id: "gen-01", name: "Industrial standby generator", brand: "Perkins engine · Stamford alternator", capacity: "250 kVA", year: "2019", hours: "1,240 run hours", condition: "Excellent", report: "Load-bank tested to 80% rated capacity. Oil pressure, cooling circuit and alternator insulation checked. Service documentation reviewed.", availability: "Ready for assessment" },
-  { id: "gen-02", name: "Commercial backup generator", brand: "Cummins engine · Stamford alternator", capacity: "100 kVA", year: "2020", hours: "860 run hours", condition: "Very good", report: "Fuel and cooling systems inspected. Electrical outputs validated. Preventive maintenance completed; load test report available for review.", availability: "Inspection report available" },
-  { id: "gen-03", name: "Industrial power generator", brand: "Caterpillar engine · Brush alternator", capacity: "500 kVA", year: "2017", hours: "2,110 run hours", condition: "Very good", report: "Inspected and serviced before resale. Control panel, voltage regulation and transfer compatibility tested and documented.", availability: "Project matched" },
+  { id: "gen-01", name: "Standby generator assessment", brand: "Make and alternator: confirmed per unit", capacity: "Confirmed per unit", year: "Recorded per unit", hours: "Recorded per unit", condition: "Recorded per unit", report: "A completed report should identify load-test conditions, electrical readings, service records, observed faults and any limitations for this specific unit.", availability: "Confirm before offer" },
+  { id: "gen-02", name: "Commercial backup generator assessment", brand: "Make and alternator: confirmed per unit", capacity: "Confirmed per unit", year: "Recorded per unit", hours: "Recorded per unit", condition: "Recorded per unit", report: "A completed report should state the inspection scope, test results, maintenance evidence, outstanding repairs and documents available for review.", availability: "Confirm before offer" },
+  { id: "gen-03", name: "Industrial power equipment assessment", brand: "Make and alternator: confirmed per unit", capacity: "Confirmed per unit", year: "Recorded per unit", hours: "Recorded per unit", condition: "Recorded per unit", report: "A completed report should document controls, output checks, compatibility limits, known defects and any recommended follow-up for this specific unit.", availability: "Confirm before offer" },
 ] as const;
 
 export type QuoteItem = { id: string; quantity: number };
