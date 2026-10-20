@@ -1,5 +1,5 @@
-- [ ] Add the missing public route leaves for home, trust, services, catalogue, equipment, quote, audit, assessment, and trade-in.
-- [ ] Complete catalogue coverage and persistent multi-item quoting; preserve certified-equipment transparency and structured audit/loan intake.
-- [ ] Correct upload-path validation and verify file signatures, size/type restrictions, private storage, and rate-limited submission.
-- [ ] Add the requested technical specification and unique metadata to every content route.
-- [ ] Verify routes, key customer flows, existing tests, and the preview build; record any unavailable email delivery configuration.
+- [x] Add the missing public route leaves for home, trust, services, catalogue, equipment, quote, audit, assessment, and trade-in.
+- [x] Complete catalogue coverage and persistent multi-item quoting; preserve certified-equipment transparency and structured audit/loan intake.
+- [x] Correct upload-path validation and verify file signatures, size/type restrictions, private storage, and rate-limited submission.
+- [x] Add the requested technical specification and unique metadata to every content route.
+- [ ] Verify routes, key customer flows, tests, and the preview build; email delivery remains unconfigured pending an owner notification address/provider.
