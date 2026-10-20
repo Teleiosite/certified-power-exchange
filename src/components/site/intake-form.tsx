@@ -7,7 +7,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useQuote } from "@/components/site/quote-context";
 import { formatQuantity } from "@/lib/lampros-data";
-import { hasValidFileSignature, intakeFileSchema, isAllowedFile, type IntakeFile } from "@/lib/intake-schema";
+import { hasValidFileSignature, intakeFileSchema, type IntakeFile } from "@/lib/intake-schema";
 import { supabase } from "@/integrations/supabase/client";
 import { submitLamprosInquiry } from "@/lib/intake.functions";
 
@@ -88,16 +88,23 @@ export function IntakeForm({ kind, description, legal }: { kind: InquiryKind; de
       ? Object.entries(loanFiles).flatMap(([category, list]) => list.map((file) => ({ file, category: category as IntakeFile["category"] })))
       : fileItems;
     const uploaded: IntakeFile[] = [];
-    for (const entry of files) {
-      const suffix = entry.file.type === "application/pdf" ? "pdf" : entry.file.type === "image/jpeg" ? "jpg" : entry.file.type === "image/png" ? "png" : "webp";
-      const storagePath = `${crypto.randomUUID()}.${suffix}`;
-      const { error: uploadError } = await supabase.storage.from("lampros-assessment-files").upload(storagePath, entry.file, {
-        contentType: entry.file.type,
-        cacheControl: "0",
-        upsert: false,
-      });
-      if (uploadError) throw new Error(`We couldn't attach ${entry.file.name}. Please try that file again.`);
-      uploaded.push({ name: entry.file.name, storagePath, type: entry.file.type as IntakeFile["type"], size: entry.file.size, ...(entry.category ? { category: entry.category } : {}) });
+    try {
+      for (const entry of files) {
+        const suffix = entry.file.type === "application/pdf" ? "pdf" : entry.file.type === "image/jpeg" ? "jpg" : entry.file.type === "image/png" ? "png" : "webp";
+        const storagePath = `${crypto.randomUUID()}.${suffix}`;
+        const { error: uploadError } = await supabase.storage.from("lampros-assessment-files").upload(storagePath, entry.file, {
+          contentType: entry.file.type,
+          cacheControl: "0",
+          upsert: false,
+        });
+        if (uploadError) throw new Error(`We couldn't attach ${entry.file.name}. Please try that file again.`);
+        uploaded.push({ name: entry.file.name, storagePath, type: entry.file.type as IntakeFile["type"], size: entry.file.size, ...(entry.category ? { category: entry.category } : {}) });
+      }
+    } catch (uploadError) {
+      if (uploaded.length) {
+        await supabase.storage.from("lampros-assessment-files").remove(uploaded.map((file) => file.storagePath)).catch(() => undefined);
+      }
+      throw uploadError;
     }
     return cleanDocuments(uploaded);
   }
@@ -166,7 +173,7 @@ export function IntakeForm({ kind, description, legal }: { kind: InquiryKind; de
 
       {kind === "trade-in" && <section className="grid gap-5 border-t border-border pt-6"><div><h2 className="text-lg font-semibold">Equipment details</h2><p className="mt-1 text-sm text-muted-foreground">Clear specifications support a transparent first review.</p></div><Field id="trade-details" label="Equipment description, condition and known faults" required><Textarea className={`${sharedInput} min-h-36`} id="trade-details" required minLength={10} maxLength={4000} value={values.details} onChange={(event) => setValue("details", event.target.value)} placeholder="Type, make, model, kVA rating, year, hours, service history and known issues…" /></Field><div><Label htmlFor="trade-files">Attach recent equipment photographs or a condition report</Label><input ref={fileRef} id="trade-files" className="sr-only" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" multiple onChange={(event) => addFiles(event.target.files)} /><Button type="button" variant="outline" className="mt-3 w-full sm:w-auto" onClick={() => fileRef.current?.click()}><UploadCloud /> Attach equipment documents</Button>{fileItems.length > 0 && <p className="mt-2 text-xs text-muted-foreground">{fileItems.map(({ file }) => file.name).join(", ")}</p>}<p className="mt-2 text-xs text-muted-foreground">PDF, JPG, PNG or WebP · up to 10 MB each · stored privately</p></div></section>}
 
-      {isWizard && step === 3 && <section className="grid gap-5"><div><h2 className="text-lg font-semibold">Documents for institutional review</h2><p className="mt-1 text-sm leading-6 text-muted-foreground">Attach the project documents available to you. Missing items can be discussed during the preliminary review.</p></div><div className="grid gap-4">{fileCategories.map((category) => <div key={category} className="border border-border p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-sm font-semibold capitalize">{category}</p><p className="mt-1 text-xs text-muted-foreground">PDF or image · up to 10 MB</p></div><label className="inline-flex min-h-10 cursor-pointer items-center gap-2 border border-input px-3 text-xs font-semibold hover:bg-accent"><UploadCloud className="size-4" /> Browse files<input className="sr-only" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" multiple onChange={(event) => changeLoanFiles(category, event)} /></label></div>{(loanFiles[category] ?? []).length > 0 && <ul className="mt-3 grid gap-2">{loanFiles[category]?.map((file, index) => <li key={`${file.name}-${file.size}-${index}`} className="flex items-center gap-2 text-xs text-muted-foreground"><FileText className="size-4 shrink-0 text-primary" /><span className="min-w-0 flex-1 truncate">{file.name}</span><span>{(file.size / 1024 / 1024).toFixed(1)} MB</span><Button variant="ghost" size="icon" className="size-8" type="button" aria-label={`Remove ${file.name}`} onClick={() => removeLoanFile(category, index)}><X className="size-4" /></Button></li>)}</ul>}</div>)}</div><div className="border border-border p-4"><p className="flex items-center gap-2 text-sm font-semibold"><LockKeyhole className="size-4 text-primary" /> Protected document handling</p><p className="mt-2 text-xs leading-5 text-muted-foreground">Files are submitted over an encrypted connection and stored in a private project file area. Do not upload bank login credentials, card details, or unrelated identity documents.</p></div><label className="flex items-start gap-3 text-sm leading-6"><input required type="checkbox" className="mt-1 size-4 accent-primary" />I confirm I’m authorized to share these documents for preliminary assessment. I understand this intake is not a credit decision, loan commitment, engineering certification or binding offer. Any scope, financing, warranty or commercial terms require separate written confirmation from the relevant parties.</label></section>}
+      {isWizard && step === 3 && <section className="grid gap-5"><div><h2 className="text-lg font-semibold">Documents for institutional review</h2><p className="mt-1 text-sm leading-6 text-muted-foreground">Attach the project documents available to you. Missing items can be discussed during the preliminary review.</p></div><div className="grid gap-4">{fileCategories.map((category) => <div key={category} className="border border-border p-4"><div className="flex flex-wrap items-center justify-between gap-3"><div><p className="text-sm font-semibold capitalize">{category}</p><p className="mt-1 text-xs text-muted-foreground">PDF or image · up to 10 MB</p></div><label className="inline-flex min-h-10 cursor-pointer items-center gap-2 border border-input px-3 text-xs font-semibold hover:bg-accent"><UploadCloud className="size-4" /> Browse files<input className="sr-only" type="file" accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp" multiple onChange={(event) => changeLoanFiles(category, event)} /></label></div>{(loanFiles[category] ?? []).length > 0 && <ul className="mt-3 grid gap-2">{loanFiles[category]?.map((file, index) => <li key={`${file.name}-${file.size}-${index}`} className="flex items-center gap-2 text-xs text-muted-foreground"><FileText className="size-4 shrink-0 text-primary" /><span className="min-w-0 flex-1 truncate">{file.name}</span><span>{(file.size / 1024 / 1024).toFixed(1)} MB</span><Button variant="ghost" size="icon" className="size-8" type="button" aria-label={`Remove ${file.name}`} onClick={() => removeLoanFile(category, index)}><X className="size-4" /></Button></li>)}</ul>}</div>)}</div><div className="border border-border p-4"><p className="flex items-center gap-2 text-sm font-semibold"><LockKeyhole className="size-4 text-primary" /> Protected document handling</p><p className="mt-2 text-xs leading-5 text-muted-foreground">Files are submitted over an encrypted connection and stored in a private project file area. Do not upload bank login credentials, card details, or unrelated identity documents.</p></div><label className="flex items-start gap-3 text-sm leading-6"><input required checked={documentsConfirmed} onChange={(event) => setDocumentsConfirmed(event.target.checked)} type="checkbox" className="mt-1 size-4 accent-primary" />I confirm I’m authorized to share these documents for preliminary assessment. I understand this intake is not a credit decision, loan commitment, engineering certification or binding offer. Any scope, financing, warranty or commercial terms require separate written confirmation from the relevant parties.</label></section>}
 
       {!isWizard && kind !== "audit" && kind !== "trade-in" && <Field id="quote-notes" label="Project specifications or delivery notes" hint="List preferred specifications, quantities, timeline or delivery requirements."><Textarea className={`${sharedInput} min-h-24`} id="quote-notes" maxLength={4000} value={values.details} onChange={(event) => setValue("details", event.target.value)} placeholder="What should our sourcing team know?" /></Field>}
 

@@ -50,9 +50,10 @@ export function QuoteProvider({ children }: { children: ReactNode }) {
   }, []);
   const changeQuantity = useCallback((id: string, quantity: number) => {
     if (!Number.isFinite(quantity)) return;
-    setItems((previous) => quantity <= 0
+    const normalizedQuantity = Math.floor(quantity);
+    setItems((previous) => normalizedQuantity < 1
       ? previous.filter((item) => item.id !== id)
-      : previous.map((item) => item.id === id ? { ...item, quantity: Math.min(100000, Math.floor(quantity)) } : item));
+      : previous.map((item) => item.id === id ? { ...item, quantity: Math.min(100000, normalizedQuantity) } : item));
   }, []);
   const clear = useCallback(() => setItems([]), []);
   const value = useMemo(() => ({ items, count: items.reduce((sum, item) => sum + item.quantity, 0), addItem, changeQuantity, clear }), [items, addItem, changeQuantity, clear]);
