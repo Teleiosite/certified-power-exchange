@@ -22,9 +22,22 @@ export const intakeFileSchema = intakeFileSchemaBase.superRefine((file, context)
   }
 });
 
+function readFileSlice(file: Blob): Promise<ArrayBuffer> {
+  if (typeof file.arrayBuffer === "function") return file.arrayBuffer();
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      if (reader.result instanceof ArrayBuffer) resolve(reader.result);
+      else reject(new Error("Could not read file contents."));
+    });
+    reader.addEventListener("error", () => reject(reader.error ?? new Error("Could not read file contents.")));
+    reader.readAsArrayBuffer(file);
+  });
+}
+
 export async function hasValidFileSignature(file: Blob): Promise<boolean> {
   if (!isAllowedFile(file)) return false;
-  const bytes = new Uint8Array(await file.slice(0, 12).arrayBuffer());
+  const bytes = new Uint8Array(await readFileSlice(file.slice(0, 12)));
   if (file.type === "application/pdf") return new TextDecoder().decode(bytes.slice(0, 5)) === "%PDF-";
   if (file.type === "image/jpeg") return bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff;
   if (file.type === "image/png") return [0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a].every((byte, index) => bytes[index] === byte);
@@ -65,4 +78,4 @@ export type IntakeInput = z.input<typeof inquirySchema>;
 export type IntakeFile = z.infer<typeof intakeFileSchema>;
 
 export const maxIntakeFileSize = 10 * 1024 * 1024;
-export const isAllowedFile = (file: File) => supportedUploadTypes.includes(file.type as (typeof supportedUploadTypes)[number]) && file.size > 0 && file.size <= maxIntakeFileSize;
+export const isAllowedFile = (file: Blob) => supportedUploadTypes.includes(file.type as (typeof supportedUploadTypes)[number]) && file.size > 0 && file.size <= maxIntakeFileSize;

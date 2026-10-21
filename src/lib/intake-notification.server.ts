@@ -8,9 +8,9 @@ type NotificationConfig =
   | { configured: true; apiKey: string; recipient: string; sender: string };
 
 export function notificationConfiguration() {
-  const apiKey = process.env.RESEND_API_KEY?.trim();
-  const recipient = process.env.LAMPROS_NOTIFICATION_EMAIL?.trim();
-  const sender = process.env.LAMPROS_FROM_EMAIL?.trim();
+  const apiKey = process.env["RESEND_API_KEY"]?.trim();
+  const recipient = process.env["LAMPROS_NOTIFICATION_EMAIL"]?.trim();
+  const sender = process.env["LAMPROS_FROM_EMAIL"]?.trim();
   const values = [apiKey, recipient, sender];
   const hasAnyConfiguration = values.some(Boolean);
   const isFullyConfigured = values.every(Boolean);
@@ -30,7 +30,7 @@ export async function sendInquiryNotification(inquiryId: string, inquiry: Inquir
   const response = await fetch("https://api.resend.com/emails", {
     method: "POST",
     headers: {
-      authorization: `******
+      authorization: ["Bearer", configuration.apiKey].join(" "),
       "content-type": "application/json",
     },
     body: JSON.stringify({

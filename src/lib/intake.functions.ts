@@ -3,6 +3,7 @@ import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
 import { hasValidFileSignature, inquirySchema } from "@/lib/intake-schema";
 
 const storageBucket = "lampros-assessment-files";
+const isProduction = process.env["NODE_ENV"] === "production" || import.meta.env.PROD;
 
 async function fingerprint(address: string): Promise<string> {
   const bytes = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(`lampros-intake:${address}`));
@@ -12,8 +13,11 @@ async function fingerprint(address: string): Promise<string> {
 export const submitLamprosInquiry = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inquirySchema.parse(input))
   .handler(async ({ data }) => {
-    const address = getRequestHeader("cf-connecting-ip") ?? getRequestIP({ xForwardedFor: false }) ?? "unknown";
-    if (process.env.NODE_ENV === "production" && address === "unknown") {
+    const address =
+      getRequestHeader("cf-connecting-ip")?.trim() ||
+      getRequestIP({ xForwardedFor: false }) ||
+      "unknown";
+    if (isProduction && address === "unknown") {
       throw new Error("Enquiry submissions are temporarily unavailable. Please try again later.");
     }
     const ipFingerprint = await fingerprint(address);
@@ -21,7 +25,7 @@ export const submitLamprosInquiry = createServerFn({ method: "POST" })
     const { sendInquiryNotification, notificationConfiguration } = await import("@/lib/intake-notification.server");
 
     const notification = notificationConfiguration();
-    if (process.env.NODE_ENV === "production" && !notification.configured) {
+    if (isProduction && !notification.configured) {
       throw new Error("Enquiry submissions are temporarily unavailable. Please try again later.");
     }
 
@@ -70,7 +74,7 @@ export const submitLamprosInquiry = createServerFn({ method: "POST" })
       notification_status: notification.configured ? "pending" : "not_configured",
     }).select("id").single();
 
-    if (error) throw new Error("We couldn't save this enquiry. Please check your details and try again.");
+    if (error || !inquiry) throw new Error("We couldn't save this enquiry. Please check your details and try again.");
     if (notification.configured) {
       const delivered = await sendInquiryNotification(inquiry.id, data);
       const { error: notificationUpdateError } = await supabaseAdmin

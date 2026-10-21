@@ -50,12 +50,13 @@ Apply database migrations before deploying code that depends on them. Keep a dat
 
 ## Go-live checklist requiring owner confirmation
 
-- [ ] Select and test the production domain, TLS, hosting account, staging environment, and release/rollback owner.
+- [ ] Select and test the production domain, TLS, hosting account, staging environment, and release/rollback owner. Confirm all subdomains support HTTPS before relying on the HSTS `includeSubDomains` directive.
 - [ ] Set runtime secrets and validate `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, and provider credentials without exposing them in logs.
 - [ ] Apply and verify database migrations, RLS, storage bucket privacy/limits, backups, and a restore.
 - [ ] Configure an authorized mailbox, verify the sender domain with Resend, and test delivery, bounce handling, and failed-notification review.
 - [ ] Approve a privacy notice, terms, data-controller/business contact, applicable jurisdictional requirements, retention schedule, deletion process, and document access policy. This repository does not make a legal compliance determination.
 - [ ] Decide whether malware scanning or quarantine is required for customer-uploaded documents and implement/operate it before accepting sensitive paperwork.
 - [ ] Configure production error monitoring, alert routing, uptime checks, and an incident-response owner. Current server errors and notification failures are written to platform logs.
+- [ ] Define and test a deployment-specific Content Security Policy after confirming the framework's hydration requirements and all asset/API origins; this app does not yet emit a CSP.
 - [ ] Verify real browser flows in staging across mobile/desktop, including successful and rejected forms, upload limits, rate limiting, database outage behavior, and inquiry follow-up.
 - [ ] Replace sample catalogue/equipment content with owner-verified information or retain the existing clear illustrative/non-live disclaimers.

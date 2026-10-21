@@ -56,7 +56,7 @@ Owner notification is sent through Resend when `RESEND_API_KEY`, `LAMPROS_NOTIFI
 2. The client checks required contact/project values and file limits/signatures.
 3. Selected files upload to a private bucket with an enforced 10 MiB object limit and UUID filenames.
 4. The server validates the request, applies request-rate limiting, downloads each referenced object to verify its actual size, MIME type, and signature, then saves the inquiry and document metadata.
-5. The page shows the appropriate confirmation. Quote, audit, loan, and trade-in requests are reviewed offline; no payment or automatic email is implied.
+5. The page shows the appropriate confirmation. Quote, audit, loan, and trade-in requests are reviewed offline; there is no online payment or financing decision.
 
 ## Verification scope
 
