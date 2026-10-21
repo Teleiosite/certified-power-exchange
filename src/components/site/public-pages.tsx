@@ -98,39 +98,92 @@ export function HomePage() {
     const updateIndex = () => setHeroIndex(heroApi.selectedScrollSnap());
     updateIndex();
     heroApi.on("select", updateIndex);
-    return () => heroApi.off("select", updateIndex);
+    return () => {
+      heroApi.off("select", updateIndex);
+    };
   }, [heroApi]);
 
   return (
     <main>
-      <Carousel setApi={setHeroApi} opts={{ loop: true }} aria-label="Featured energy solutions" className="overflow-hidden border-b border-border">
+      <Carousel
+        setApi={setHeroApi}
+        opts={{ loop: true }}
+        aria-label="Featured energy solutions"
+        className="overflow-hidden border-b border-border"
+      >
         <CarouselContent className="ml-0">
           {heroSlides.map((slide, index) => (
-            <CarouselItem key={slide.title} className="relative min-h-[590px] pl-0 sm:min-h-[650px]">
-              <img src={slide.image} alt={slide.alt} className="absolute inset-0 size-full object-cover object-center" />
+            <CarouselItem
+              key={slide.title}
+              className="relative min-h-[590px] pl-0 sm:min-h-[650px]"
+            >
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className="absolute inset-0 size-full object-cover object-center"
+              />
               <div className="absolute inset-0 bg-background/80 sm:bg-background/70" />
               <div className="shell-width relative flex min-h-[590px] items-center py-16 sm:min-h-[650px] sm:py-24">
                 <div className="max-w-3xl rise-in">
                   <p className="eyebrow">{slide.eyebrow}</p>
-                  {index === 0
-                    ? <h1 className="mt-5 text-5xl font-semibold leading-[1.08] sm:text-6xl">{slide.title}</h1>
-                    : <h2 className="mt-5 text-5xl font-semibold leading-[1.08] sm:text-6xl">{slide.title}</h2>}
-                  <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">{slide.copy}</p>
+                  {index === 0 ? (
+                    <h1 className="mt-5 text-5xl font-semibold leading-[1.08] sm:text-6xl">
+                      {slide.title}
+                    </h1>
+                  ) : (
+                    <h2 className="mt-5 text-5xl font-semibold leading-[1.08] sm:text-6xl">
+                      {slide.title}
+                    </h2>
+                  )}
+                  <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+                    {slide.copy}
+                  </p>
                   <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                    <Button size="lg" asChild><Link to={slide.primaryTo}>{slide.primary} <ArrowRight /></Link></Button>
-                    <Button size="lg" variant="outline" asChild><Link to={slide.secondaryTo}>{slide.secondary} <ArrowRight /></Link></Button>
+                    <Button size="lg" asChild>
+                      <Link to={slide.primaryTo}>
+                        {slide.primary} <ArrowRight />
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild>
+                      <Link to={slide.secondaryTo}>
+                        {slide.secondary} <ArrowRight />
+                      </Link>
+                    </Button>
                   </div>
-                  {index === 0 && <div className="mt-10 grid max-w-2xl grid-cols-1 gap-3 border-t border-border pt-5 text-sm sm:grid-cols-3">
-                    {["Project-matched supply", "Clear condition reports", "No online payment"].map((item) => <p key={item} className="flex items-center gap-2 text-foreground"><Check className="size-4 shrink-0 text-primary" />{item}</p>)}
-                  </div>}
-                  <p className="mt-6 text-xs font-semibold tracking-widest text-muted-foreground" aria-live="polite">{String(heroIndex + 1).padStart(2, "0")} / {String(heroSlides.length).padStart(2, "0")}</p>
+                  {index === 0 && (
+                    <div className="mt-10 grid max-w-2xl grid-cols-1 gap-3 border-t border-border pt-5 text-sm sm:grid-cols-3">
+                      {[
+                        "Project-matched supply",
+                        "Clear condition reports",
+                        "No online payment",
+                      ].map((item) => (
+                        <p key={item} className="flex items-center gap-2 text-foreground">
+                          <Check className="size-4 shrink-0 text-primary" />
+                          {item}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                  <p
+                    className="mt-6 text-xs font-semibold tracking-widest text-muted-foreground"
+                    aria-live="polite"
+                  >
+                    {String(heroIndex + 1).padStart(2, "0")} /{" "}
+                    {String(heroSlides.length).padStart(2, "0")}
+                  </p>
                 </div>
               </div>
             </CarouselItem>
           ))}
         </CarouselContent>
-        <CarouselPrevious aria-label="Previous featured slide" className="left-auto right-16 top-auto bottom-5 translate-y-0 border-border bg-background/90" />
-        <CarouselNext aria-label="Next featured slide" className="right-5 top-auto bottom-5 translate-y-0 border-border bg-background/90" />
+        <CarouselPrevious
+          aria-label="Previous featured slide"
+          className="left-auto right-16 top-auto bottom-5 translate-y-0 border-border bg-background/90"
+        />
+        <CarouselNext
+          aria-label="Next featured slide"
+          className="right-5 top-auto bottom-5 translate-y-0 border-border bg-background/90"
+        />
       </Carousel>
       <section className="section-space">
         <div className="shell-width">
@@ -155,30 +208,69 @@ export function HomePage() {
 
 export function ContactPage() {
   const contactOptions = [
-    { title: "Energy projects", copy: "Share your location, operating needs and power context for an initial energy review.", link: "Request an energy audit", to: "/audit", icon: Gauge },
-    { title: "Supplies & equipment", copy: "Build a list of products or equipment for a project-specific quote.", link: "Browse supplies", to: "/catalog", icon: ShoppingBasket },
-    { title: "Equipment recovery", copy: "Tell us about equipment you may want inspected, sold or traded in.", link: "Start a trade-in review", to: "/trade-in", icon: Wrench },
+    {
+      title: "Energy projects",
+      copy: "Share your location, operating needs and power context for an initial energy review.",
+      link: "Request an energy audit",
+      to: "/audit",
+      icon: Gauge,
+    },
+    {
+      title: "Supplies & equipment",
+      copy: "Build a list of products or equipment for a project-specific quote.",
+      link: "Browse supplies",
+      to: "/catalog",
+      icon: ShoppingBasket,
+    },
+    {
+      title: "Equipment recovery",
+      copy: "Tell us about equipment you may want inspected, sold or traded in.",
+      link: "Start a trade-in review",
+      to: "/trade-in",
+      icon: Wrench,
+    },
   ] as const;
 
   return (
     <main>
-      <Intro label="Contact Lampros" title="Let’s talk about what your project needs." copy="Choose the type of support you’re looking for and share the details through the right request form. Our team will review your project context and follow up." />
+      <Intro
+        label="Contact Lampros"
+        title="Let’s talk about what your project needs."
+        copy="Choose the type of support you’re looking for and share the details through the right request form. Our team will review your project context and follow up."
+      />
       <section className="section-space">
         <div className="shell-width">
-          <SectionTitle label="How can we help?" title="Start with the right conversation." copy="Each request goes to a focused review so we can respond with useful, project-specific information." />
+          <SectionTitle
+            label="How can we help?"
+            title="Start with the right conversation."
+            copy="Each request goes to a focused review so we can respond with useful, project-specific information."
+          />
           <div className="mt-8 grid gap-x-8 md:grid-cols-3">
             {contactOptions.map(({ title, copy, link, to, icon: Icon }) => (
               <article key={title} className="border-t border-border py-6">
                 <Icon className="size-6 text-primary" />
                 <h2 className="mt-4 text-xl font-semibold">{title}</h2>
                 <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy}</p>
-                <Link to={to} className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary">{link}<ArrowRight className="size-4" /></Link>
+                <Link
+                  to={to}
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                >
+                  {link}
+                  <ArrowRight className="size-4" />
+                </Link>
               </article>
             ))}
           </div>
           <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
-            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">For a structured project or financing review, you can also submit a project assessment file.</p>
-            <Button asChild variant="outline"><Link to="/assessment">Project assessment <ArrowRight /></Link></Button>
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              For a structured project or financing review, you can also submit a project assessment
+              file.
+            </p>
+            <Button asChild variant="outline">
+              <Link to="/assessment">
+                Project assessment <ArrowRight />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

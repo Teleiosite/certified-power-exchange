@@ -31,9 +31,16 @@ export function SiteHeader() {
           <Link aria-label="Lampros Power Tech home" to="/" onClick={() => setMobileOpen(false)} className="flex w-[154px] shrink-0 items-center">
             <img src={logo} alt="Lampros Power Tech" width={280} height={120} className="w-full" />
           </Link>
-          <nav aria-label="Primary navigation" className="hidden items-center gap-2 md:flex xl:gap-5">
+          <nav
+            aria-label="Primary navigation"
+            className="hidden items-center gap-2 md:flex xl:gap-5"
+          >
             {navigation.map((item) => (
-              <Link key={item.to} to={item.to} className={`whitespace-nowrap text-xs font-medium transition-colors hover:text-primary lg:text-sm ${pathname === item.to ? "text-primary" : "text-muted-foreground"}`}>
+              <Link
+                key={item.to}
+                to={item.to}
+                className={`whitespace-nowrap text-xs font-medium transition-colors hover:text-primary lg:text-sm ${pathname === item.to ? "text-primary" : "text-muted-foreground"}`}
+              >
                 {item.label}
               </Link>
             ))}
@@ -72,7 +79,12 @@ export function SiteFooter() {
         <div>
           <h2 className="mb-4 text-sm font-semibold">Explore</h2>
           <div className="grid gap-3 text-sm text-muted-foreground">
-            <Link to="/" className="hover:text-primary">Home</Link><Link to="/about" className="hover:text-primary">About Lampros</Link><Link to="/services" className="hover:text-primary">Energy services</Link><Link to="/catalog" className="hover:text-primary">Supplies catalogue</Link><Link to="/equipment" className="hover:text-primary">Certified equipment</Link><Link to="/contact-us" className="hover:text-primary">Contact Us</Link>
+            <Link to="/" className="hover:text-primary">Home</Link>
+            <Link to="/about" className="hover:text-primary">About Lampros</Link>
+            <Link to="/services" className="hover:text-primary">Energy services</Link>
+            <Link to="/catalog" className="hover:text-primary">Supplies catalogue</Link>
+            <Link to="/equipment" className="hover:text-primary">Certified equipment</Link>
+            <Link to="/contact-us" className="hover:text-primary">Contact Us</Link>
           </div>
         </div>
         <div>
