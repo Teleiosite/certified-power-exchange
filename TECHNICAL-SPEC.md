@@ -35,7 +35,7 @@ Each public page is a file-based route, renders a shared site page, and provides
 
 ### Inquiry data
 
-All public writes pass through `submitLamprosInquiry` in `src/lib/intake.functions.ts`, where Zod validates the payload, a server-side IP fingerprint is rate-limited, and accepted requests are stored in `public.lampros_inquiries`.
+All public writes pass through `submitLamprosInquiry` in `src/lib/intake.functions.ts`, where Zod validates the payload, a keyed HMAC of the request IP is rate-limited, and accepted requests are stored in `public.lampros_inquiries`. The HMAC key is the server-only Supabase service-role key; raw IP addresses are not stored.
 
 The database row includes inquiry type, contact and organization, email, phone, location, estimated load in kW, optional monthly power cost, outage frequency, sector, details, product items, attached-document metadata, IP fingerprint, and creation time. The rate-limit RPC is `claim_lampros_submission_slot`.
 
@@ -45,19 +45,19 @@ The database row includes inquiry type, contact and organization, email, phone, 
 - Estimated power load: finite, positive, maximum 1,000,000 kW.
 - Audit: monthly power cost, outage frequency, and sector are required.
 - Quote: one or more items are required; each quantity is a positive integer up to 100,000; at most 50 items.
-- Documents: at most 8 files; 10 MiB maximum per file; accepted types are PDF, JPEG, PNG, and WebP. The browser checks the file header before upload, and the submitted object path must be a UUID plus a matching extension.
+- Documents: at most 8 files; 10 MiB maximum per file; accepted types are PDF, JPEG, PNG, and WebP. The browser checks the file header before upload, and the server re-downloads each object to verify size, MIME type, and signature. Object paths must be UUIDs with a matching extension.
 - Loan documents are stored in the private `lampros-assessment-files` bucket and are grouped as equipment specifications, energy requirements, project cost estimates, or financing paperwork.
 
-Email notifications are not configured. The intake stores submissions but does not send an email; an owner notification address/provider must be supplied and configured separately.
+Owner notification is sent through Resend when `RESEND_API_KEY`, `LAMPROS_NOTIFICATION_EMAIL`, and `LAMPROS_FROM_EMAIL` are configured. Production submissions fail closed if the configuration is absent. Delivery status and timestamp are stored on each inquiry; transient provider failures leave the inquiry saved with `notification_status = 'failed'` for operator follow-up. Notification messages do not include uploaded documents.
 
 ## Execution path
 
 1. A visitor opens a public page and optionally builds a quote list; that list persists in the same browser.
 2. The client checks required contact/project values and file limits/signatures.
-3. Selected files upload to private storage under UUID filenames with the correct extension.
-4. The form invokes the validated server function; the server applies request-rate limiting and saves the inquiry plus document metadata.
-5. The page shows the appropriate confirmation. Quote, audit, loan, and trade-in requests are reviewed offline; no payment or automatic email is implied.
+3. Selected files upload to a private bucket with an enforced 10 MiB object limit and UUID filenames.
+4. The server validates the request, applies request-rate limiting, downloads each referenced object to verify its actual size, MIME type, and signature, then saves the inquiry and document metadata.
+5. The page shows the appropriate confirmation. Quote, audit, loan, and trade-in requests are reviewed offline; there is no online payment or financing decision.
 
 ## Verification scope
 
-The project includes route coverage for all nine public paths and intake tests for contact requirements, audit requirements, quote contents, document type/size/header checks, and UUID file paths. Visual and server-side customer submission verification should be completed in the running preview; external email delivery remains unavailable until configured.
+The project includes route coverage for all nine public paths and intake tests for contact requirements, audit requirements, quote contents, document type/size/header checks, UUID file paths, and security headers. Production operations and the external configuration required for launch are documented in `DEPLOYMENT.md`. Legal/privacy approval, live provider setup, and staging verification remain owner responsibilities.

@@ -1,6 +1,15 @@
 import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
-import { Check, ChevronLeft, ChevronRight, FileText, LockKeyhole, ShieldCheck, UploadCloud, X } from "lucide-react";
+import {
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  FileText,
+  LockKeyhole,
+  ShieldCheck,
+  UploadCloud,
+  X,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -120,8 +129,9 @@ export function IntakeForm({ kind, description, legal }: { kind: InquiryKind; de
     }
     if (kind === "loan" && !documentsConfirmed) { setError("Confirm that you are authorized to share these documents before submitting."); return; }
     setSubmitting(true);
+    let uploadedFiles: IntakeFile[] = [];
     try {
-      const files = await uploadFiles();
+      uploadedFiles = await uploadFiles();
       await saveInquiry({ data: {
         inquiryType: kind,
         name: values.name,
@@ -135,11 +145,14 @@ export function IntakeForm({ kind, description, legal }: { kind: InquiryKind; de
         sector: values.sector || undefined,
         details: kind === "audit" ? `Monthly power cost currency: ${values.monthlyPowerCurrency}\n\n${values.details}` : values.details,
         items: quote.items.map((item) => ({ id: item.id, name: item.name, quantity: item.quantity })),
-        files,
+        files: uploadedFiles,
       } });
       setSubmitted(true);
       if (kind === "quote") quote.clear();
     } catch (submissionError) {
+      if (uploadedFiles.length) {
+        await supabase.storage.from("lampros-assessment-files").remove(uploadedFiles.map((file) => file.storagePath)).catch(() => undefined);
+      }
       setError(submissionError instanceof Error ? submissionError.message : "Please try again in a moment.");
     } finally {
       setSubmitting(false);
