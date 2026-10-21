@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 const navigation = [
   { to: "/", label: "Home" },
   { to: "/about", label: "About" },
+  { to: "/gallery", label: "Gallery" },
   { to: "/services", label: "Energy services" },
   { to: "/catalog", label: "Supplies" },
   { to: "/equipment", label: "Power equipment" },
@@ -81,6 +82,7 @@ export function SiteFooter() {
           <div className="grid gap-3 text-sm text-muted-foreground">
             <Link to="/" className="hover:text-primary">Home</Link>
             <Link to="/about" className="hover:text-primary">About Lampros</Link>
+            <Link to="/gallery" className="hover:text-primary">Gallery</Link>
             <Link to="/services" className="hover:text-primary">Energy services</Link>
             <Link to="/catalog" className="hover:text-primary">Supplies catalogue</Link>
             <Link to="/equipment" className="hover:text-primary">Certified equipment</Link>
