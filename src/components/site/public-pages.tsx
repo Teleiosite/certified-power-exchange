@@ -51,7 +51,7 @@ const serviceRows = [
   { title: "Electrical components", copy: "Solar and conventional electrical components selected against project specifications.", to: "/catalog", link: "Browse supplies", icon: ShoppingBasket },
   { title: "Power equipment sourcing", copy: "New, inspected and refurbishment candidates considered transparently against your site needs.", to: "/equipment", link: "Review equipment", icon: PackageSearch },
   { title: "Project & loan assessment", copy: "A structured evaluation file for project scope, equipment requirements and supporting documents.", to: "/assessment", link: "Start an assessment", icon: FileSearch },
-];
+] as const;
 
 const heroSlides = [
   {
@@ -87,7 +87,7 @@ const heroSlides = [
     secondary: "Request a Quote",
     secondaryTo: "/quote",
   },
-];
+] as const;
 
 export function HomePage() {
   const [heroApi, setHeroApi] = useState<CarouselApi>();
@@ -158,7 +158,7 @@ export function ContactPage() {
     { title: "Energy projects", copy: "Share your location, operating needs and power context for an initial energy review.", link: "Request an energy audit", to: "/audit", icon: Gauge },
     { title: "Supplies & equipment", copy: "Build a list of products or equipment for a project-specific quote.", link: "Browse supplies", to: "/catalog", icon: ShoppingBasket },
     { title: "Equipment recovery", copy: "Tell us about equipment you may want inspected, sold or traded in.", link: "Start a trade-in review", to: "/trade-in", icon: Wrench },
-  ];
+  ] as const;
 
   return (
     <main>
