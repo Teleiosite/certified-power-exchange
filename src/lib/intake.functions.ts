@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
-import { getRequestIP } from "@tanstack/react-start/server";
-import { inquirySchema } from "@/lib/intake-schema";
-import { hasValidFileSignature } from "@/lib/intake-schema";
+import { getRequestHeader, getRequestIP } from "@tanstack/react-start/server";
+import { hasValidFileSignature, inquirySchema } from "@/lib/intake-schema";
 
 const storageBucket = "lampros-assessment-files";
 
@@ -13,7 +12,10 @@ async function fingerprint(address: string): Promise<string> {
 export const submitLamprosInquiry = createServerFn({ method: "POST" })
   .inputValidator((input: unknown) => inquirySchema.parse(input))
   .handler(async ({ data }) => {
-    const address = getRequestIP({ xForwardedFor: false }) ?? "unknown";
+    const address = getRequestHeader("cf-connecting-ip") ?? getRequestIP({ xForwardedFor: false }) ?? "unknown";
+    if (process.env.NODE_ENV === "production" && address === "unknown") {
+      throw new Error("Enquiry submissions are temporarily unavailable. Please try again later.");
+    }
     const ipFingerprint = await fingerprint(address);
     const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
     const { sendInquiryNotification, notificationConfiguration } = await import("@/lib/intake-notification.server");

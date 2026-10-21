@@ -3,18 +3,24 @@ import { inquirySchema } from "@/lib/intake-schema";
 
 type Inquiry = z.infer<typeof inquirySchema>;
 
+type NotificationConfig =
+  | { configured: false }
+  | { configured: true; apiKey: string; recipient: string; sender: string };
+
 export function notificationConfiguration() {
   const apiKey = process.env.RESEND_API_KEY?.trim();
   const recipient = process.env.LAMPROS_NOTIFICATION_EMAIL?.trim();
   const sender = process.env.LAMPROS_FROM_EMAIL?.trim();
   const values = [apiKey, recipient, sender];
-  const configured = values.every(Boolean);
+  const hasAnyConfiguration = values.some(Boolean);
+  const isFullyConfigured = values.every(Boolean);
 
-  if (values.some(Boolean) && !configured) {
+  if (hasAnyConfiguration && !isFullyConfigured) {
     throw new Error("Configure RESEND_API_KEY, LAMPROS_NOTIFICATION_EMAIL, and LAMPROS_FROM_EMAIL together.");
   }
 
-  return { configured, ...(configured ? { apiKey: apiKey!, recipient: recipient!, sender: sender! } : {}) };
+  if (!isFullyConfigured) return { configured: false } satisfies NotificationConfig;
+  return { configured: true, apiKey: apiKey!, recipient: recipient!, sender: sender! } satisfies NotificationConfig;
 }
 
 export async function sendInquiryNotification(inquiryId: string, inquiry: Inquiry): Promise<boolean> {
