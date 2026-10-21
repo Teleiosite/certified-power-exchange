@@ -111,6 +111,7 @@ const heroSlides = [
 export function HomePage() {
   const [heroApi, setHeroApi] = useState<CarouselApi>();
   const [heroIndex, setHeroIndex] = useState(0);
+  const [paused, setPaused] = useState(false);
 
   useEffect(() => {
     if (!heroApi) return;
@@ -122,9 +123,20 @@ export function HomePage() {
     };
   }, [heroApi]);
 
+  useEffect(() => {
+    if (!heroApi || paused) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const timer = window.setInterval(() => heroApi.scrollNext(), 6000);
+    return () => window.clearInterval(timer);
+  }, [heroApi, paused]);
+
   return (
     <main>
       <Carousel
+        onMouseEnter={() => setPaused(true)}
+        onMouseLeave={() => setPaused(false)}
+        onFocus={() => setPaused(true)}
+        onBlur={() => setPaused(false)}
         setApi={setHeroApi}
         opts={{ loop: true }}
         aria-label="Featured energy solutions"
