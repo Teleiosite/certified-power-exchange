@@ -30,9 +30,28 @@ import electricalImage from "@/assets/electrical-components.jpg";
 import inspectionImage from "@/assets/generator-inspection.jpg";
 import { IntakeForm } from "@/components/site/intake-form";
 
-function Intro({ label, title, copy }: { label: string; title: string; copy: string }) {
+function Intro({
+  label,
+  title,
+  copy,
+  imageBackground = false,
+}: {
+  label: string;
+  title: string;
+  copy: string;
+  imageBackground?: boolean;
+}) {
   return (
-    <section className="border-b border-border bg-background py-14 sm:py-20">
+    <section
+      className={`border-b border-border bg-background py-14 sm:py-20${imageBackground ? " bg-cover bg-center" : ""}`}
+      style={
+        imageBackground
+          ? {
+              backgroundImage: `linear-gradient(90deg, rgba(2, 12, 34, 0.88), rgba(2, 12, 34, 0.68)), url("${heroImage}")`,
+            }
+          : undefined
+      }
+    >
       <div className="shell-width max-w-4xl">
         <p className="eyebrow">{label}</p>
         <h1 className="mt-4 max-w-4xl text-4xl font-semibold leading-tight sm:text-5xl">{title}</h1>
@@ -237,6 +256,7 @@ export function ContactPage() {
         label="Contact Lampros"
         title="Let’s talk about what your project needs."
         copy="Choose the type of support you’re looking for and share the details through the right request form. Our team will review your project context and follow up."
+        imageBackground
       />
       <section className="section-space">
         <div className="shell-width">
@@ -285,7 +305,7 @@ export function AboutPage() {
     ["Engineer review", "Technical suitability and inspection findings are documented for the specific equipment or project."],
     ["Response process", "Requests are reviewed with project context; timing is confirmed directly rather than promised automatically."],
   ];
-  return <main><Intro label="About Lampros" title="Practical energy choices. Accountable equipment sourcing." copy="Lampros Power Tech brings renewable energy, electrical supply and power equipment sourcing together around clear requirements and transparent review." />
+  return <main><Intro label="About Lampros" title="Practical energy choices. Accountable equipment sourcing." copy="Lampros Power Tech brings renewable energy, electrical supply and power equipment sourcing together around clear requirements and transparent review." imageBackground />
     <section className="section-space"><div className="shell-width grid gap-12 md:grid-cols-2"><div><p className="eyebrow">Our mission</p><h2 className="mt-3 text-3xl font-semibold">Make dependable power more practical to plan.</h2><p className="mt-4 text-sm leading-7 text-muted-foreground">We work to connect customers with fit-for-purpose energy products, considered technical support and credible equipment recovery options—without overstating performance or availability.</p></div><div><p className="eyebrow">Our vision</p><h2 className="mt-3 text-3xl font-semibold">Better-informed decisions across the power lifecycle.</h2><p className="mt-4 text-sm leading-7 text-muted-foreground">We aim for a market where product specifications, inspection history and project assumptions are easier to examine before commitments are made.</p></div></div></section>
     <section className="border-y border-border bg-card py-14"><div className="shell-width"><SectionTitle label="Our values" title="How we approach the work" copy="A consistent standard for project conversations, product selection and recovery assessments." /><ul className="mt-8 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">{values.map((value) => <li key={value} className="flex items-center gap-3 border-t border-border py-4 text-sm font-semibold"><Check className="size-4 text-primary" />{value}</li>)}</ul></div></section>
     <section className="section-space"><div className="shell-width"><SectionTitle label="Trust matrix" title="Evidence before assurance." copy="The details that should be confirmed for each project—not blanket promises." /><div className="mt-8 grid gap-0 md:grid-cols-3">{standards.map(([title, copy]) => <article key={title} className="border-t border-border p-5 md:border-r md:last:border-r-0"><ShieldCheck className="size-5 text-primary" /><h3 className="mt-4 font-semibold">{title}</h3><p className="mt-2 text-sm leading-6 text-muted-foreground">{copy}</p></article>)}</div></div></section>
@@ -293,7 +313,7 @@ export function AboutPage() {
 }
 
 export function ServicesPage() {
-  return <main><Intro label="Energy services" title="One project view across energy, supply and equipment." copy="Start with the operating need. We’ll review the site context, load and delivery requirements before discussing suitable next steps." />
+  return <main><Intro label="Energy services" title="One project view across energy, supply and equipment." copy="Start with the operating need. We’ll review the site context, load and delivery requirements before discussing suitable next steps." imageBackground />
     <section className="section-space"><div className="shell-width grid gap-0 md:grid-cols-2">{serviceRows.map(({ title, copy, to, link, icon: Icon }) => <article key={title} className="border-t border-border p-6 md:border-r md:last:border-r-0"><Icon className="size-6 text-primary" /><h2 className="mt-4 text-xl font-semibold">{title}</h2><p className="mt-3 text-sm leading-6 text-muted-foreground">{copy}</p><Button className="mt-5" variant="outline" asChild><Link to={to}>{link}<ArrowRight /></Link></Button></article>)}</div></section>
     <section className="border-y border-border bg-card py-14"><div className="shell-width grid gap-8 md:grid-cols-3"><div><p className="eyebrow">01 · Understand</p><h2 className="mt-2 text-xl font-semibold">Operating context</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">Load, outages, usage patterns, site and timeline.</p></div><div><p className="eyebrow">02 · Evaluate</p><h2 className="mt-2 text-xl font-semibold">Practical options</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">Equipment fit, specifications and condition evidence.</p></div><div><p className="eyebrow">03 · Confirm</p><h2 className="mt-2 text-xl font-semibold">Written scope</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">Costs, logistics, warranty and responsibilities agreed offline.</p></div></div></section>
   </main>;
@@ -305,7 +325,7 @@ export function CatalogPage() {
   const [query, setQuery] = useState("");
   const selectedIds = new Set(items.map((item) => item.id));
   const filtered = useMemo(() => products.filter((product) => (category === "All equipment" || product.category === category) && `${product.name} ${product.description} ${product.spec} ${product.category}`.toLowerCase().includes(query.trim().toLowerCase())), [category, query]);
-  return <main><Intro label="Supplies & equipment" title="Specifications first. Supply matched to the work." copy="Search renewable energy products and electrical components. Final brand, quantities, freight and project requirements are confirmed with our team." />
+  return <main><Intro label="Supplies & equipment" title="Specifications first. Supply matched to the work." copy="Search renewable energy products and electrical components. Final brand, quantities, freight and project requirements are confirmed with our team." imageBackground />
     <section className="section-space"><div className="shell-width">
       <div className="grid gap-5 border-b border-border pb-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end"><div><label htmlFor="catalog-search" className="mb-2 block text-sm font-semibold">Search products</label><div className="relative max-w-xl"><Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input id="catalog-search" value={query} onChange={(event) => setQuery(event.target.value)} placeholder="Search panels, inverters, cable…" className="pl-10" /></div></div><p className="text-sm text-muted-foreground">{filtered.length} items · {items.length} in quote list</p></div>
       <div className="mt-5 flex flex-wrap gap-2" aria-label="Filter by product category">{productCategories.map((item) => <Button key={item} type="button" size="sm" variant={category === item ? "default" : "outline"} onClick={() => setCategory(item)}>{item}</Button>)}</div>
@@ -321,7 +341,7 @@ export function CatalogPage() {
 
 export function EquipmentPage() {
   const steps = ["Sourcing review", "Inspection & refurbishment", "Functional testing", "Documented resale review"];
-  return <main><Intro label="Power equipment" title="Recovered equipment, examined before it is offered." copy="We favour transparent inspection findings over vague condition labels. Suitability depends on the unit, test evidence, project requirements and written terms." />
+  return <main><Intro label="Power equipment" title="Recovered equipment, examined before it is offered." copy="We favour transparent inspection findings over vague condition labels. Suitability depends on the unit, test evidence, project requirements and written terms." imageBackground />
     <section className="section-space"><div className="shell-width grid gap-10 lg:grid-cols-[.82fr_1.18fr] lg:items-start"><div><SectionTitle label="Recovery process" title="A documented path to resale." copy="A unit may be rejected at any stage. Refurbishment does not erase wear, limitations or the need to match equipment to its intended duty." /><ol className="mt-8 grid gap-0">{steps.map((step, index) => <li key={step} className="flex gap-4 border-t border-border py-4"><span className="grid size-8 shrink-0 place-items-center border border-primary text-xs font-semibold text-primary">0{index + 1}</span><span><strong className="text-sm">{step}</strong><span className="mt-1 block text-xs text-muted-foreground">{index === 0 ? "Source, identity and basic documentation reviewed." : index === 1 ? "Condition recorded; viable repairs identified." : index === 2 ? "Relevant checks and test results retained." : "Report, limitations, availability and terms confirmed."}</span></span></li>)}</ol></div><img src={inspectionImage} alt="Engineer checking an industrial generator" className="photo-frame aspect-[4/3] w-full object-cover" /></div></section>
     <section className="border-y border-border bg-card py-14"><div className="shell-width flex flex-col gap-4 border-l-2 border-primary pl-5 sm:flex-row sm:items-center sm:justify-between"><div><p className="eyebrow">LAMPROS INSPECTED &amp; CERTIFIED</p><h2 className="mt-2 text-2xl font-semibold">A documented standard—not a generic used-equipment label.</h2><p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">This status applies only when the specific unit’s inspection and test requirements have been completed and records are available. Illustrative profiles below do not represent live stock or issued certificates.</p></div><ShieldCheck className="size-9 shrink-0 text-primary" /></div></section>
     <section className="section-space"><div className="shell-width"><SectionTitle label="Illustrative condition reports" title="What an equipment review should make visible." copy="Sample records demonstrate the information we aim to provide. They are not current listings, engineering approvals or warranty offers." /><div className="mt-8 grid gap-x-8 md:grid-cols-2">{inventory.map((item) => <article key={item.id} className="border-t border-border py-6"><div className="flex flex-wrap items-start justify-between gap-3"><div><p className="eyebrow">Sample assessment profile · {item.capacity}</p><h2 className="mt-2 text-xl font-semibold">{item.name}</h2><p className="mt-1 text-sm text-muted-foreground">{item.brand}</p></div><span className="inline-flex items-center gap-2 border border-primary/40 px-3 py-2 text-xs font-semibold text-primary"><ClipboardCheck className="size-4" />Test status: report example</span></div><dl className="mt-5 grid grid-cols-2 gap-3 border-y border-border py-4 text-sm"><div><dt className="text-xs text-muted-foreground">Year</dt><dd className="mt-1 font-medium">{item.year}</dd></div><div><dt className="text-xs text-muted-foreground">Run hours</dt><dd className="mt-1 font-medium">{item.hours}</dd></div><div><dt className="text-xs text-muted-foreground">Reported condition</dt><dd className="mt-1 font-medium">{item.condition}</dd></div><div><dt className="text-xs text-muted-foreground">Availability</dt><dd className="mt-1 font-medium">{item.availability}</dd></div></dl><p className="mt-4 text-sm leading-6 text-muted-foreground">{item.report}</p></article>)}</div><Button asChild className="mt-8"><Link to="/trade-in">Sell or trade in equipment <Wrench /></Link></Button></div></section>
