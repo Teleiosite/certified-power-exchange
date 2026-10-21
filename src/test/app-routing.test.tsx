@@ -10,9 +10,22 @@ describe("App routing", () => {
   it("matches the home page and each public destination", () => {
     const router = createRouter({ routeTree, context: { queryClient: new QueryClient() } });
 
-    for (const path of ["/", "/about", "/services", "/catalog", "/equipment", "/quote", "/audit", "/assessment", "/trade-in"]) {
+    for (const path of [
+      "/",
+      "/about",
+      "/services",
+      "/catalog",
+      "/equipment",
+      "/quote",
+      "/audit",
+      "/assessment",
+      "/trade-in",
+      "/contact-us",
+    ]) {
       const matches = router.matchRoutes(path);
-      expect(matches.at(-1)?.routeId, `expected ${path} to resolve to a page`).not.toBe(rootRouteId);
+      expect(matches.at(-1)?.routeId, `expected ${path} to resolve to a page`).not.toBe(
+        rootRouteId,
+      );
     }
   });
 });

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -13,6 +13,14 @@ import {
   ShoppingBasket,
   Wrench,
 } from "lucide-react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useQuote } from "@/components/site/quote-context";
@@ -43,29 +51,140 @@ const serviceRows = [
   { title: "Electrical components", copy: "Solar and conventional electrical components selected against project specifications.", to: "/catalog", link: "Browse supplies", icon: ShoppingBasket },
   { title: "Power equipment sourcing", copy: "New, inspected and refurbishment candidates considered transparently against your site needs.", to: "/equipment", link: "Review equipment", icon: PackageSearch },
   { title: "Project & loan assessment", copy: "A structured evaluation file for project scope, equipment requirements and supporting documents.", to: "/assessment", link: "Start an assessment", icon: FileSearch },
-];
+] as const;
+
+const heroSlides = [
+  {
+    image: heroImage,
+    alt: "Engineer inspecting rooftop solar and electrical equipment",
+    eyebrow: "LAMPROS POWER TECH · PRACTICAL POWER, CLEAR SPECS",
+    title: "Dependable Energy Products. Practical Power Solutions.",
+    copy: "From right-sized renewable systems to carefully sourced electrical supplies and inspected power equipment, we help you make informed project decisions.",
+    primary: "Request an Energy Audit",
+    primaryTo: "/audit",
+    secondary: "Browse Supplies & Equipment",
+    secondaryTo: "/catalog",
+  },
+  {
+    image: inspectionImage,
+    alt: "Technician reviewing a generator during inspection",
+    eyebrow: "POWER EQUIPMENT · INSPECTED WITH CARE",
+    title: "A clearer view of every equipment decision.",
+    copy: "Review condition findings, functional tests and known limitations before deciding whether a unit fits your project.",
+    primary: "Explore Power Equipment",
+    primaryTo: "/equipment",
+    secondary: "Contact Our Team",
+    secondaryTo: "/contact-us",
+  },
+  {
+    image: electricalImage,
+    alt: "Electrical components and cabling for energy projects",
+    eyebrow: "SUPPLIES · MATCHED TO YOUR PROJECT",
+    title: "Find the right components for the work ahead.",
+    copy: "Start with your specifications and project context. We’ll help you review practical supply options for your requirements.",
+    primary: "Browse Supplies",
+    primaryTo: "/catalog",
+    secondary: "Request a Quote",
+    secondaryTo: "/quote",
+  },
+] as const;
 
 export function HomePage() {
+  const [heroApi, setHeroApi] = useState<CarouselApi>();
+  const [heroIndex, setHeroIndex] = useState(0);
+
+  useEffect(() => {
+    if (!heroApi) return;
+    const updateIndex = () => setHeroIndex(heroApi.selectedScrollSnap());
+    updateIndex();
+    heroApi.on("select", updateIndex);
+    return () => {
+      heroApi.off("select", updateIndex);
+    };
+  }, [heroApi]);
+
   return (
     <main>
-      <section className="relative isolate min-h-[590px] overflow-hidden border-b border-border sm:min-h-[650px]">
-        <img src={heroImage} alt="Engineer inspecting rooftop solar and electrical equipment" className="absolute inset-0 -z-20 size-full object-cover object-center" />
-        <div className="absolute inset-0 -z-10 bg-background/80 sm:bg-background/70" />
-        <div className="shell-width flex min-h-[590px] items-center py-16 sm:min-h-[650px] sm:py-24">
-          <div className="max-w-3xl rise-in">
-            <p className="eyebrow">LAMPROS POWER TECH · PRACTICAL POWER, CLEAR SPECS</p>
-            <h1 className="mt-5 text-5xl font-semibold leading-[1.08] sm:text-6xl">Dependable Energy Products. Practical Power Solutions.</h1>
-            <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">From right-sized renewable systems to carefully sourced electrical supplies and inspected power equipment, we help you make informed project decisions.</p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button size="lg" asChild><Link to="/audit">Request an Energy Audit <ArrowRight /></Link></Button>
-              <Button size="lg" variant="outline" asChild><Link to="/catalog">Browse Supplies &amp; Equipment <ShoppingBasket /></Link></Button>
-            </div>
-            <div className="mt-10 grid max-w-2xl grid-cols-1 gap-3 border-t border-border pt-5 text-sm sm:grid-cols-3">
-              {["Project-matched supply", "Clear condition reports", "No online payment"].map((item) => <p key={item} className="flex items-center gap-2 text-foreground"><Check className="size-4 shrink-0 text-primary" />{item}</p>)}
-            </div>
-          </div>
-        </div>
-      </section>
+      <Carousel
+        setApi={setHeroApi}
+        opts={{ loop: true }}
+        aria-label="Featured energy solutions"
+        className="overflow-hidden border-b border-border"
+      >
+        <CarouselContent className="ml-0">
+          {heroSlides.map((slide, index) => (
+            <CarouselItem
+              key={slide.title}
+              className="relative min-h-[590px] pl-0 sm:min-h-[650px]"
+            >
+              <img
+                src={slide.image}
+                alt={slide.alt}
+                className="absolute inset-0 size-full object-cover object-center"
+              />
+              <div className="absolute inset-0 bg-background/80 sm:bg-background/70" />
+              <div className="shell-width relative flex min-h-[590px] items-center py-16 sm:min-h-[650px] sm:py-24">
+                <div className="max-w-3xl rise-in">
+                  <p className="eyebrow">{slide.eyebrow}</p>
+                  {index === 0 ? (
+                    <h1 className="mt-5 text-5xl font-semibold leading-[1.08] sm:text-6xl">
+                      {slide.title}
+                    </h1>
+                  ) : (
+                    <h2 className="mt-5 text-5xl font-semibold leading-[1.08] sm:text-6xl">
+                      {slide.title}
+                    </h2>
+                  )}
+                  <p className="mt-6 max-w-2xl text-base leading-7 text-muted-foreground sm:text-lg">
+                    {slide.copy}
+                  </p>
+                  <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                    <Button size="lg" asChild>
+                      <Link to={slide.primaryTo}>
+                        {slide.primary} <ArrowRight />
+                      </Link>
+                    </Button>
+                    <Button size="lg" variant="outline" asChild>
+                      <Link to={slide.secondaryTo}>
+                        {slide.secondary} <ArrowRight />
+                      </Link>
+                    </Button>
+                  </div>
+                  {index === 0 && (
+                    <div className="mt-10 grid max-w-2xl grid-cols-1 gap-3 border-t border-border pt-5 text-sm sm:grid-cols-3">
+                      {[
+                        "Project-matched supply",
+                        "Clear condition reports",
+                        "No online payment",
+                      ].map((item) => (
+                        <p key={item} className="flex items-center gap-2 text-foreground">
+                          <Check className="size-4 shrink-0 text-primary" />
+                          {item}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                  <p
+                    className="mt-6 text-xs font-semibold tracking-widest text-muted-foreground"
+                    aria-live="polite"
+                  >
+                    {String(heroIndex + 1).padStart(2, "0")} /{" "}
+                    {String(heroSlides.length).padStart(2, "0")}
+                  </p>
+                </div>
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious
+          aria-label="Previous featured slide"
+          className="left-auto right-16 top-auto bottom-5 translate-y-0 border-border bg-background/90"
+        />
+        <CarouselNext
+          aria-label="Next featured slide"
+          className="right-5 top-auto bottom-5 translate-y-0 border-border bg-background/90"
+        />
+      </Carousel>
       <section className="section-space">
         <div className="shell-width">
           <SectionTitle label="What we do" title="Power decisions grounded in your requirements." copy="A practical starting point for homes, facilities and businesses planning supply, continuity or electrical work." />
@@ -82,6 +201,78 @@ export function HomePage() {
       </section>
       <section className="section-space">
         <div className="shell-width grid gap-8 md:grid-cols-[1fr_auto] md:items-end"><SectionTitle label="Start with your project" title="Tell us what needs to work." copy="Share your location, approximate load and operating context. We’ll use that information to shape a relevant first review." /><Button asChild size="lg"><Link to="/quote">Build a quote list <ArrowRight /></Link></Button></div>
+      </section>
+    </main>
+  );
+}
+
+export function ContactPage() {
+  const contactOptions = [
+    {
+      title: "Energy projects",
+      copy: "Share your location, operating needs and power context for an initial energy review.",
+      link: "Request an energy audit",
+      to: "/audit",
+      icon: Gauge,
+    },
+    {
+      title: "Supplies & equipment",
+      copy: "Build a list of products or equipment for a project-specific quote.",
+      link: "Browse supplies",
+      to: "/catalog",
+      icon: ShoppingBasket,
+    },
+    {
+      title: "Equipment recovery",
+      copy: "Tell us about equipment you may want inspected, sold or traded in.",
+      link: "Start a trade-in review",
+      to: "/trade-in",
+      icon: Wrench,
+    },
+  ] as const;
+
+  return (
+    <main>
+      <Intro
+        label="Contact Lampros"
+        title="Let’s talk about what your project needs."
+        copy="Choose the type of support you’re looking for and share the details through the right request form. Our team will review your project context and follow up."
+      />
+      <section className="section-space">
+        <div className="shell-width">
+          <SectionTitle
+            label="How can we help?"
+            title="Start with the right conversation."
+            copy="Each request goes to a focused review so we can respond with useful, project-specific information."
+          />
+          <div className="mt-8 grid gap-x-8 md:grid-cols-3">
+            {contactOptions.map(({ title, copy, link, to, icon: Icon }) => (
+              <article key={title} className="border-t border-border py-6">
+                <Icon className="size-6 text-primary" />
+                <h2 className="mt-4 text-xl font-semibold">{title}</h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{copy}</p>
+                <Link
+                  to={to}
+                  className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-primary"
+                >
+                  {link}
+                  <ArrowRight className="size-4" />
+                </Link>
+              </article>
+            ))}
+          </div>
+          <div className="mt-8 flex flex-col gap-4 border-t border-border pt-6 sm:flex-row sm:items-center sm:justify-between">
+            <p className="max-w-2xl text-sm leading-6 text-muted-foreground">
+              For a structured project or financing review, you can also submit a project assessment
+              file.
+            </p>
+            <Button asChild variant="outline">
+              <Link to="/assessment">
+                Project assessment <ArrowRight />
+              </Link>
+            </Button>
+          </div>
+        </div>
       </section>
     </main>
   );

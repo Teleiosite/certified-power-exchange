@@ -14,6 +14,7 @@ import { Route as AboutRouteImport } from './routes/about'
 import { Route as AssessmentRouteImport } from './routes/assessment'
 import { Route as AuditRouteImport } from './routes/audit'
 import { Route as CatalogRouteImport } from './routes/catalog'
+import { Route as ContactUsRouteImport } from './routes/contact-us'
 import { Route as EquipmentRouteImport } from './routes/equipment'
 import { Route as QuoteRouteImport } from './routes/quote'
 import { Route as ServicesRouteImport } from './routes/services'
@@ -44,6 +45,11 @@ const CatalogRoute = CatalogRouteImport.update({
   path: '/catalog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ContactUsRoute = ContactUsRouteImport.update({
+  id: '/contact-us',
+  path: '/contact-us',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EquipmentRoute = EquipmentRouteImport.update({
   id: '/equipment',
   path: '/equipment',
@@ -71,6 +77,7 @@ export interface FileRoutesByFullPath {
   '/assessment': typeof AssessmentRoute
   '/audit': typeof AuditRoute
   '/catalog': typeof CatalogRoute
+  '/contact-us': typeof ContactUsRoute
   '/equipment': typeof EquipmentRoute
   '/quote': typeof QuoteRoute
   '/services': typeof ServicesRoute
@@ -82,6 +89,7 @@ export interface FileRoutesByTo {
   '/assessment': typeof AssessmentRoute
   '/audit': typeof AuditRoute
   '/catalog': typeof CatalogRoute
+  '/contact-us': typeof ContactUsRoute
   '/equipment': typeof EquipmentRoute
   '/quote': typeof QuoteRoute
   '/services': typeof ServicesRoute
@@ -94,6 +102,7 @@ export interface FileRoutesById {
   '/assessment': typeof AssessmentRoute
   '/audit': typeof AuditRoute
   '/catalog': typeof CatalogRoute
+  '/contact-us': typeof ContactUsRoute
   '/equipment': typeof EquipmentRoute
   '/quote': typeof QuoteRoute
   '/services': typeof ServicesRoute
@@ -107,6 +116,7 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/audit'
     | '/catalog'
+    | '/contact-us'
     | '/equipment'
     | '/quote'
     | '/services'
@@ -118,6 +128,7 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/audit'
     | '/catalog'
+    | '/contact-us'
     | '/equipment'
     | '/quote'
     | '/services'
@@ -129,6 +140,7 @@ export interface FileRouteTypes {
     | '/assessment'
     | '/audit'
     | '/catalog'
+    | '/contact-us'
     | '/equipment'
     | '/quote'
     | '/services'
@@ -141,6 +153,7 @@ export interface RootRouteChildren {
   AssessmentRoute: typeof AssessmentRoute
   AuditRoute: typeof AuditRoute
   CatalogRoute: typeof CatalogRoute
+  ContactUsRoute: typeof ContactUsRoute
   EquipmentRoute: typeof EquipmentRoute
   QuoteRoute: typeof QuoteRoute
   ServicesRoute: typeof ServicesRoute
@@ -184,6 +197,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CatalogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/contact-us': {
+      id: '/contact-us'
+      path: '/contact-us'
+      fullPath: '/contact-us'
+      preLoaderRoute: typeof ContactUsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/equipment': {
       id: '/equipment'
       path: '/equipment'
@@ -221,6 +241,7 @@ const rootRouteChildren: RootRouteChildren = {
   AssessmentRoute: AssessmentRoute,
   AuditRoute: AuditRoute,
   CatalogRoute: CatalogRoute,
+  ContactUsRoute: ContactUsRoute,
   EquipmentRoute: EquipmentRoute,
   QuoteRoute: QuoteRoute,
   ServicesRoute: ServicesRoute,
