@@ -140,13 +140,11 @@ export function HomePage() {
       <Carousel
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        onFocusCapture={(event) => {
-          if (
-            !(event.target instanceof HTMLElement && event.target.hasAttribute("data-autoplay-toggle"))
-          ) {
-            setHasFocus(true);
-          }
-        }}
+        onFocusCapture={(event) =>
+          setHasFocus(
+            !(event.target instanceof HTMLElement && event.target.hasAttribute("data-autoplay-toggle")),
+          )
+        }
         onBlurCapture={(event) => {
           if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
             setHasFocus(false);

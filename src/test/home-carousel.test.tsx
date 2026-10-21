@@ -82,7 +82,12 @@ describe("HomePage carousel autoplay", () => {
     advanceCarousel();
     expect(carouselApi.scrollNext).toHaveBeenCalledTimes(1);
 
-    fireEvent.click(screen.getByRole("button", { name: "Play slideshow" }));
+    const playButton = screen.getByRole("button", { name: "Play slideshow" });
+    const previous = screen.getByRole("button", { name: "Previous featured slide" });
+    fireEvent.focus(previous);
+    fireEvent.blur(previous, { relatedTarget: playButton });
+    fireEvent.focus(playButton);
+    fireEvent.click(playButton);
     advanceCarousel();
     expect(carouselApi.scrollNext).toHaveBeenCalledTimes(2);
   });
