@@ -8,6 +8,8 @@ import {
   FileSearch,
   Gauge,
   PackageSearch,
+  Pause,
+  Play,
   Search,
   ShieldCheck,
   ShoppingBasket,
@@ -111,7 +113,10 @@ const heroSlides = [
 export function HomePage() {
   const [heroApi, setHeroApi] = useState<CarouselApi>();
   const [heroIndex, setHeroIndex] = useState(0);
-  const [paused, setPaused] = useState(false);
+  const [manuallyPaused, setManuallyPaused] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const [hasFocus, setHasFocus] = useState(false);
+  const paused = manuallyPaused || isHovered || hasFocus;
 
   useEffect(() => {
     if (!heroApi) return;
@@ -133,10 +138,20 @@ export function HomePage() {
   return (
     <main>
       <Carousel
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onFocus={() => setPaused(true)}
-        onBlur={() => setPaused(false)}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        onFocusCapture={(event) => {
+          if (
+            !(event.target instanceof HTMLElement && event.target.hasAttribute("data-autoplay-toggle"))
+          ) {
+            setHasFocus(true);
+          }
+        }}
+        onBlurCapture={(event) => {
+          if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+            setHasFocus(false);
+          }
+        }}
         setApi={setHeroApi}
         opts={{ loop: true }}
         aria-label="Featured energy solutions"
@@ -215,6 +230,17 @@ export function HomePage() {
           aria-label="Next featured slide"
           className="right-5 top-auto bottom-5 translate-y-0 border-border bg-background/90"
         />
+        <Button
+          type="button"
+          variant="outline"
+          size="icon"
+          data-autoplay-toggle
+          aria-label={manuallyPaused ? "Play slideshow" : "Pause slideshow"}
+          onClick={() => setManuallyPaused((current) => !current)}
+          className="absolute right-[6.75rem] top-auto bottom-5 translate-y-0 border-border bg-background/90"
+        >
+          {manuallyPaused ? <Play /> : <Pause />}
+        </Button>
       </Carousel>
       <section className="section-space">
         <div className="shell-width">
