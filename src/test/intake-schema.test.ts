@@ -30,6 +30,7 @@ describe("intake file safeguards", () => {
     const base = { name: "specification.pdf", type: "application/pdf" as const, size: 12 };
     expect(intakeFileSchema.safeParse({ ...base, storagePath: "550e8400-e29b-41d4-a716-446655440000.pdf" }).success).toBe(true);
     expect(intakeFileSchema.safeParse({ ...base, storagePath: "550e8400-e29b-41d4-a716-446655440000" }).success).toBe(false);
+    expect(intakeFileSchema.safeParse({ ...base, storagePath: "550e8400-e29b-41d4-a716-446655440000.png" }).success).toBe(false);
   });
 
   it("rejects a PDF whose bytes do not match the declared file type", async () => {

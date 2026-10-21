@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 export const supportedUploadTypes = ["application/pdf", "image/jpeg", "image/png", "image/webp"] as const;
-export const intakeFileSchema = z.object({
+const intakeFileSchemaBase = z.object({
   name: z.string().trim().min(1).max(200),
   storagePath: z.string().regex(/^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\.(pdf|jpg|png|webp)$/i),
   type: z.enum(supportedUploadTypes),
@@ -9,7 +9,20 @@ export const intakeFileSchema = z.object({
   category: z.enum(["equipment specifications", "energy requirements", "project cost estimates", "financing paperwork"]).optional(),
 });
 
-export async function hasValidFileSignature(file: File): Promise<boolean> {
+export const intakeFileSchema = intakeFileSchemaBase.superRefine((file, context) => {
+  const extension = file.storagePath.split(".").at(-1)?.toLowerCase();
+  const expectedExtension: Record<(typeof supportedUploadTypes)[number], string> = {
+    "application/pdf": "pdf",
+    "image/jpeg": "jpg",
+    "image/png": "png",
+    "image/webp": "webp",
+  };
+  if (extension !== expectedExtension[file.type]) {
+    context.addIssue({ code: z.ZodIssueCode.custom, path: ["storagePath"], message: "File extension does not match its type." });
+  }
+});
+
+export async function hasValidFileSignature(file: Blob): Promise<boolean> {
   if (!isAllowedFile(file)) return false;
   const bytes = new Uint8Array(await file.slice(0, 12).arrayBuffer());
   if (file.type === "application/pdf") return new TextDecoder().decode(bytes.slice(0, 5)) === "%PDF-";

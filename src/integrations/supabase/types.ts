@@ -28,6 +28,8 @@ export type Database = {
           location: string
           monthly_power_cost: number | null
           name: string
+          notification_sent_at: string | null
+          notification_status: string
           organization: string
           outage_frequency: string | null
           phone: string
@@ -46,6 +48,8 @@ export type Database = {
           location: string
           monthly_power_cost?: number | null
           name: string
+          notification_sent_at?: string | null
+          notification_status?: string
           organization?: string
           outage_frequency?: string | null
           phone: string
@@ -64,6 +68,8 @@ export type Database = {
           location?: string
           monthly_power_cost?: number | null
           name?: string
+          notification_sent_at?: string | null
+          notification_status?: string
           organization?: string
           outage_frequency?: string | null
           phone?: string
