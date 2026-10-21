@@ -47,7 +47,7 @@ function Intro({
       style={
         imageBackground
           ? {
-              backgroundImage: `linear-gradient(90deg, rgba(2, 12, 34, 0.88), rgba(2, 12, 34, 0.68)), url("${heroImage}")`,
+              backgroundImage: `linear-gradient(90deg, rgba(2, 12, 34, 0.68), rgba(2, 12, 34, 0.42)), url("${heroImage}")`,
             }
           : undefined
       }
