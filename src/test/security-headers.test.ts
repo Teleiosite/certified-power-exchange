@@ -13,6 +13,8 @@ describe("security response headers", () => {
 
   it("enables HSTS only for HTTPS requests", () => {
     const response = withSecurityHeaders(new Response("ok"), "https://example.test/");
-    expect(response.headers.get("Strict-Transport-Security")).toBe("max-age=31536000; includeSubDomains");
+    expect(response.headers.get("Strict-Transport-Security")).toBe(
+      "max-age=31536000; includeSubDomains",
+    );
   });
 });

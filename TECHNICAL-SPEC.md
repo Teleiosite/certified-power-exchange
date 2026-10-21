@@ -35,7 +35,7 @@ Each public page is a file-based route, renders a shared site page, and provides
 
 ### Inquiry data
 
-All public writes pass through `submitLamprosInquiry` in `src/lib/intake.functions.ts`, where Zod validates the payload, a server-side IP fingerprint is rate-limited, and accepted requests are stored in `public.lampros_inquiries`.
+All public writes pass through `submitLamprosInquiry` in `src/lib/intake.functions.ts`, where Zod validates the payload, a keyed HMAC of the request IP is rate-limited, and accepted requests are stored in `public.lampros_inquiries`. The HMAC key is the server-only Supabase service-role key; raw IP addresses are not stored.
 
 The database row includes inquiry type, contact and organization, email, phone, location, estimated load in kW, optional monthly power cost, outage frequency, sector, details, product items, attached-document metadata, IP fingerprint, and creation time. The rate-limit RPC is `claim_lampros_submission_slot`.
 
@@ -45,7 +45,7 @@ The database row includes inquiry type, contact and organization, email, phone, 
 - Estimated power load: finite, positive, maximum 1,000,000 kW.
 - Audit: monthly power cost, outage frequency, and sector are required.
 - Quote: one or more items are required; each quantity is a positive integer up to 100,000; at most 50 items.
-- Documents: at most 8 files; 10 MiB maximum per file; accepted types are PDF, JPEG, PNG, and WebP. The browser checks the file header before upload, and the submitted object path must be a UUID plus a matching extension.
+- Documents: at most 8 files; 10 MiB maximum per file; accepted types are PDF, JPEG, PNG, and WebP. The browser checks the file header before upload, and the server re-downloads each object to verify size, MIME type, and signature. Object paths must be UUIDs with a matching extension.
 - Loan documents are stored in the private `lampros-assessment-files` bucket and are grouped as equipment specifications, energy requirements, project cost estimates, or financing paperwork.
 
 Owner notification is sent through Resend when `RESEND_API_KEY`, `LAMPROS_NOTIFICATION_EMAIL`, and `LAMPROS_FROM_EMAIL` are configured. Production submissions fail closed if the configuration is absent. Delivery status and timestamp are stored on each inquiry; transient provider failures leave the inquiry saved with `notification_status = 'failed'` for operator follow-up. Notification messages do not include uploaded documents.

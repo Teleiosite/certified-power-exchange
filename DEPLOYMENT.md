@@ -34,11 +34,11 @@ Notifications contain contact and project summary details, not uploaded files. R
 
 1. Back up the target Supabase project and verify restore access.
 2. Apply all SQL files in `drizzle/migrations/` in numerical order using the project's migration process. `0002_production_intake_storage.sql` creates/locks the private assessment bucket, enforces upload size and MIME allowlists, and adds notification delivery status fields.
-3. Verify `lampros-assessment-files` is private, limited to 10 MiB per object, and allows only PDF/JPEG/PNG/WebP. Anonymous users may upload only UUID-named objects and delete matching objects for abandoned/failed form submissions. Anonymous users must not be able to list or download objects.
+3. Verify `lampros-assessment-files` is private, limited to 10 MiB per object, and allows only PDF/JPEG/PNG/WebP. Anonymous users may upload only UUID-named objects and delete matching objects after failed form submissions. Anonymous users must not be able to list or download objects.
 4. Verify anonymous roles cannot select or modify inquiry and rate-limit rows; the server service-role key is the only application path for inquiry access.
 5. Run a submission and confirm the inquiry row, private file access, notification delivery, and cleanup behavior. Do not test using real customer documents.
 
-The `lampros_submission_limits` table stores one hashed address per rate-limit key. Monitor its growth and define a cleanup process appropriate to the deployed traffic and retention requirements.
+The `lampros_submission_limits` table stores one HMAC-protected address per rate-limit key. Monitor its growth and define a cleanup process appropriate to the deployed traffic and retention requirements. Uploads abandoned before submission are not automatically expired; configure and test a safe orphan-file cleanup process before accepting sensitive documents.
 
 ## Build, release, and rollback
 
@@ -56,6 +56,7 @@ Apply database migrations before deploying code that depends on them. Keep a dat
 - [ ] Configure an authorized mailbox, verify the sender domain with Resend, and test delivery, bounce handling, and failed-notification review.
 - [ ] Approve a privacy notice, terms, data-controller/business contact, applicable jurisdictional requirements, retention schedule, deletion process, and document access policy. This repository does not make a legal compliance determination.
 - [ ] Decide whether malware scanning or quarantine is required for customer-uploaded documents and implement/operate it before accepting sensitive paperwork.
+- [ ] Configure and verify a retention/orphan-cleanup process for inquiries, private documents, and rate-limit rows.
 - [ ] Configure production error monitoring, alert routing, uptime checks, and an incident-response owner. Current server errors and notification failures are written to platform logs.
 - [ ] Define and test a deployment-specific Content Security Policy after confirming the framework's hydration requirements and all asset/API origins; this app does not yet emit a CSP.
 - [ ] Verify real browser flows in staging across mobile/desktop, including successful and rejected forms, upload limits, rate limiting, database outage behavior, and inquiry follow-up.

@@ -53,10 +53,13 @@ export default {
       return withSecurityHeaders(await normalizeCatastrophicSsrResponse(response), request.url);
     } catch (error) {
       console.error(error);
-      return withSecurityHeaders(new Response(renderErrorPage(), {
-        status: 500,
-        headers: { "content-type": "text/html; charset=utf-8" },
-      }), request.url);
+      return withSecurityHeaders(
+        new Response(renderErrorPage(), {
+          status: 500,
+          headers: { "content-type": "text/html; charset=utf-8" },
+        }),
+        request.url,
+      );
     }
   },
 };
