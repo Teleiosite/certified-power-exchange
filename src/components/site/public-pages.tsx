@@ -36,7 +36,7 @@ function Intro({
   label,
   title,
   copy,
-  imageBackground = false,
+  imageBackground = true,
 }: {
   label: string;
   title: string;
@@ -400,4 +400,31 @@ export function AssessmentPage() {
 
 export function TradeInPage() {
   return <main><Intro label="Sell or trade in equipment" title="Start with the condition—not just the nameplate." copy="Tell us what you have, what is known about its history and where it is located. A first review is not an offer or a promise of resale." /><section className="section-space"><div className="shell-width grid gap-10 lg:grid-cols-[minmax(0,1fr)_16rem]"><div><img src={electricalImage} alt="Electrical equipment in a supply facility" className="photo-frame mb-8 aspect-[16/7] w-full object-cover" /><IntakeForm kind="trade-in" description="Include make, model, capacity, year, operating hours, service history and any faults. You may attach photos or a condition report." legal /></div><aside className="grid content-start gap-5"><div className="border-l-2 border-primary pl-4"><p className="eyebrow">Transparent recovery</p><h2 className="mt-2 text-base font-semibold">What happens next</h2><ol className="mt-3 grid gap-3 text-xs leading-5 text-muted-foreground"><li>1. Information and identity review</li><li>2. Inspection scope if appropriate</li><li>3. Condition and test findings recorded</li><li>4. Any offer discussed separately</li></ol></div><div className="border-t border-border pt-4"><p className="text-sm font-semibold">Please disclose known faults.</p><p className="mt-2 text-xs leading-5 text-muted-foreground">Accurate history helps us assess safe handling and whether further inspection is suitable.</p></div></aside></div></section></main>;
+}
+
+const galleryProjects = [
+  { image: heroImage, title: "Solar and power installation", copy: "Site-ready renewable energy installations planned around the client's load and operating conditions." },
+  { image: inspectionImage, title: "Generator inspection", copy: "Recovered power equipment examined and documented before it is offered for reuse." },
+  { image: electricalImage, title: "Electrical supply", copy: "Electrical components and supplies sourced to match project specifications." },
+];
+
+export function GalleryPage() {
+  return (
+    <main>
+      <Intro label="Gallery" title="Projects we have delivered." copy="A look at the work behind our projects and what each one is about." />
+      <section className="section-space">
+        <div className="shell-width grid gap-8 md:grid-cols-2 lg:grid-cols-3">
+          {galleryProjects.map((project) => (
+            <figure key={project.title} className="overflow-hidden border border-border bg-card">
+              <img src={project.image} alt={project.title} loading="lazy" className="aspect-[4/3] w-full object-cover" />
+              <figcaption className="p-5">
+                <h2 className="text-lg font-semibold">{project.title}</h2>
+                <p className="mt-2 text-sm leading-6 text-muted-foreground">{project.copy}</p>
+              </figcaption>
+            </figure>
+          ))}
+        </div>
+      </section>
+    </main>
+  );
 }
