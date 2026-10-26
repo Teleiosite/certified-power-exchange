@@ -165,14 +165,8 @@ export function HomePage() {
             >
               <img
                 src={slide.image}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 size-full scale-110 object-cover object-center blur-xl sm:hidden"
-              />
-              <img
-                src={slide.image}
                 alt={slide.alt}
-                className="absolute inset-0 size-full object-contain object-center sm:object-cover"
+                className="absolute inset-0 size-full object-cover object-center"
               />
               <div className="absolute inset-0 bg-background/80 sm:bg-background/70" />
               <div className="shell-width relative flex min-h-[590px] items-center py-16 sm:min-h-[650px] sm:py-24">
