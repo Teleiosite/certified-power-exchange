@@ -52,7 +52,7 @@ vi.mock("@/components/ui/carousel", async () => {
 
 function advanceCarousel() {
   act(() => {
-    vi.advanceTimersByTime(6000);
+    vi.advanceTimersByTime(4000);
   });
 }
 
