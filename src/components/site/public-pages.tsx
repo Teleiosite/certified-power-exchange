@@ -131,18 +131,20 @@ export function HomePage() {
   useEffect(() => {
     if (!heroApi || paused) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const timer = window.setInterval(() => heroApi.scrollNext(), 6000);
+    const timer = window.setInterval(() => heroApi.scrollNext(), 4000);
     return () => window.clearInterval(timer);
   }, [heroApi, paused]);
 
   return (
     <main>
       <Carousel
-        onMouseEnter={() => setIsHovered(true)}
-        onMouseLeave={() => setIsHovered(false)}
+        onPointerEnter={(event) => setIsHovered(event.pointerType === "mouse")}
+        onPointerLeave={() => setIsHovered(false)}
         onFocusCapture={(event) =>
           setHasFocus(
-            !(event.target instanceof HTMLElement && event.target.hasAttribute("data-autoplay-toggle")),
+            event.target instanceof HTMLElement &&
+              !event.target.hasAttribute("data-autoplay-toggle") &&
+              event.target.matches(":focus-visible"),
           )
         }
         onBlurCapture={(event) => {
@@ -163,8 +165,14 @@ export function HomePage() {
             >
               <img
                 src={slide.image}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 size-full scale-110 object-cover object-center blur-xl sm:hidden"
+              />
+              <img
+                src={slide.image}
                 alt={slide.alt}
-                className="absolute inset-0 size-full object-cover object-center"
+                className="absolute inset-0 size-full object-contain object-center sm:object-cover"
               />
               <div className="absolute inset-0 bg-background/80 sm:bg-background/70" />
               <div className="shell-width relative flex min-h-[590px] items-center py-16 sm:min-h-[650px] sm:py-24">
